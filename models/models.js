@@ -7,6 +7,12 @@ const getAllTopics = () => {
       });
   };
 
+const getAllEndpoints = () => {
+    return db.query(`SELECT * FROM api;`).then((data) => {
+        return data.rows
+    })
+}
   module.exports = {
     getAllTopics,
+    getAllEndpoints,
   };
