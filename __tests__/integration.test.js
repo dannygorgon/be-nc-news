@@ -50,7 +50,7 @@ describe("getArticleByID", () => {
       .get("/api/articles/1")
       .expect(200)
       .then((res) => {
-        const testArticle = res.body.article[0];
+        const testArticle = res.body.article;
         const expectedArticle = {
           author: "butter_bridge",
           title: "Living in the shadow of a great man",
@@ -70,7 +70,7 @@ describe("getArticleByID", () => {
       .get("/api/articles/999")
       .expect(404)
       .then((res) => {
-        expect(res.body.error).toBe("Article id 999 not found");
+        expect(res.body.error).toBe("Not found");
       });
   });
   it("should return a 400 error if invalid ID passed ", () => {
@@ -78,25 +78,8 @@ describe("getArticleByID", () => {
       .get("/api/articles/dog")
       .expect(400)
       .then((res) => {
-        expect(res.body.error).toBe("Bad request, dog is not a valid request");
+        expect(res.body.error).toBe("Bad request");
       });
   });
 });
-// Should:
 
-// be available on /api/articles/:article_id.
-// get an article by its id.
-// Responds with:
-
-// an article object, which should have the following properties:
-// author
-// title
-// article_id
-// body
-// topic
-// created_at
-// votes
-// article_img_url
-// Consider what errors could occur with this endpoint, and make sure to test for them.
-
-// Remember to add a description of this endpoint to your /api endpoint.

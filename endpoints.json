@@ -40,16 +40,6 @@
         "votes": 0,
         "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700"
       }
-    },
-    "possibleErrors": [
-      {
-        "status": 404,
-        "description": "Article not found"
-      },
-      {
-        "status": 500,
-        "description": "Internal server error"
-      }
-    ]
+    }
   }
 }
