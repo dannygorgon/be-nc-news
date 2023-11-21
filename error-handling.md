@@ -33,7 +33,7 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 ### GET `/not-a-route`
 
-- Status: ???
+- Status: 404 Not Found
 
 ---
 
@@ -41,35 +41,35 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 ### GET `/api/articles/:article_id`
 
-- Bad `article_id` (e.g. `/dog`)
-- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+400 Bad Request- Bad `article_id` (e.g. `/dog`)
+404 Not Found - Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
 
 ### PATCH `/api/articles/:article_id`
 
-- Bad `article_id` (e.g. `/dog`)
-- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
-- Invalid `inc_votes` (e.g. `{ inc_votes : "cat" }`)
+400 Bad Request- Bad `article_id` (e.g. `/dog`)
+404 Not Found - Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+422 Unprocessable Entity - Invalid `inc_votes` (e.g. `{ inc_votes : "cat" }`)
 
 ### POST `/api/articles/:article_id/comments`
 
-- ???
+Status: 201 - Created
 
 ### GET `/api/articles/:article_id/comments`
 
-- ???
+Status: 200- OK
 
 ### GET `/api/articles`
 
 - Bad queries:
-  - `sort_by` a column that doesn't exist
-  - `order` !== "asc" / "desc"
-  - `topic` that is not in the database
-  - `topic` that exists but does not have any articles associated with it
+  400 Bad Request - `sort_by` a column that doesn't exist
+  400 Bad Request - `order` !== "asc" / "desc"
+  404 Not Found - `topic` that is not in the database
+  404 Not Found - `topic` that exists but does not have any articles associated with it
 
 ### PATCH `/api/comments/:comment_id`
 
-- ???
+Status - 200 OK
 
 ### DELETE `/api/comments/:comment_id`
 
-- ???
+Status - 204 No Content
