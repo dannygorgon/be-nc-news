@@ -115,3 +115,21 @@ describe('getArticles', () => {
   });
 });
 
+describe('getCommentsByID', () => {
+it('should correctly return array of objects with a status 200 code', () => {
+  return request(app)
+  .get('/api/articles/1/comments')
+  .expect(200)
+  .then((res) => {
+    const {comments} = res.body
+    comments.forEach((comment) => {
+      expect(typeof comment.comment_id).toBe('number');
+      expect(typeof comment.votes).toBe('number');
+      expect(typeof comment.created_at).toBe('string');
+      expect(typeof comment.author).toBe('string');
+      expect(typeof comment.body).toBe('string');
+      expect(typeof comment.article_id).toBe('number');
+    });
+  })
+});
+})

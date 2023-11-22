@@ -60,9 +60,28 @@ const getAllArticles = () => {
     });
 };
 
+const getCommentsByArticleID = (id) => {
+  if (isNaN(id)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+  return db
+  .query(
+  `SELECT *  FROM comments
+  WHERE article_id = $1 ORDER BY created_at DESC;`,
+  [id]
+  )
+  .then((data) => {
+    if (!data.rows.length || data.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+  return data.rows;
+  });
+  }
+
 module.exports = {
   getAllTopics,
   getAllEndpoints,
   getArticlesByID,
   getAllArticles,
+  getCommentsByArticleID
 };
