@@ -148,5 +148,14 @@ it('should return 400 when passed an invalid type of article id', () => {
   .then((res) => {
     expect(res.body.error).toBe('Bad request');
   })
+})
+it('should return object with correct length and order', () => {
+  return request(app)
+  .get('/api/articles/1/comments')
+  .then((res) => {
+    const {comments} = res.body
+    expect(comments).toHaveLength(11);
+    expect(comments).toBeSortedBy('created_at', {descending: true});
+  })
 });
 })
