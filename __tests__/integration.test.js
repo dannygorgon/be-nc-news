@@ -132,12 +132,12 @@ it('should correctly return array of objects with a status 200 code', () => {
     });
   })
 });
-it('should return 200 and an empty array when passed an article id that does not exist', () => {
+it('should return a 404 whenn passed an article id that does not exist', () => {
   return request(app)
   .get('/api/articles/999/comments')
-  .expect(200)
+  .expect(404)
   .then((res) => {
-    expect(res.body.comments).toEqual([]);  
+    expect(res.body.error).toBe('Not found');
   })
 });
 it('should return 400 when passed an invalid type of article id', () => {
@@ -154,6 +154,16 @@ it('should return object with correct  order', () => {
   .then((res) => {
     const {comments} = res.body
     expect(comments).toBeSortedBy('created_at', {descending: true});
+  })
+});
+it('should return 200 and an empty object when passed an article_id that exists, but has no comments', () => {
+  return request(app)
+  .get('/api/articles/4/comments')
+  .expect(200)
+  .then((res) => {
+    const {comments} = res.body
+    expect(comments).toHaveLength(0);
+    expect(comments).toEqual([]); 
   })
 });
 })
