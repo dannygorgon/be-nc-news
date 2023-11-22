@@ -5,7 +5,7 @@ const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 const endpoints = require("../endpoints.json");
 const format = require("pg-format");
-
+const sorted = require("jest-sorted");
 beforeEach(() => {
   return seed(testData);
 });
@@ -104,12 +104,13 @@ describe('getArticles', () => {
       });
     })
   });
-  it('should return the object in the correct order, with correct lengths', () => {
+  it('should return the object in the correct order, with correct length and order', () => {
     return request(app)
     .get('/api/articles')
     .then((res) => {
       const {articles} = res.body
       expect(articles).toHaveLength(13);
+      expect(articles).toBeSortedBy('created_at', {descending: true});
     })
   });
 });
