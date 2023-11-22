@@ -141,4 +141,12 @@ it('should return 404 when passed an article id that does not exist', () => {
     expect(res.body.error).toBe('Not found');
   })
 });
+it('should return 400 when passed an invalid type of article id', () => {
+  return request(app)
+  .get('/api/articles/dog/comments')
+  .expect(400)
+  .then((res) => {
+    expect(res.body.error).toBe('Bad request');
+  })
+});
 })
