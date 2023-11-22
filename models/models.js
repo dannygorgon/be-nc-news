@@ -61,9 +61,7 @@ const getAllArticles = () => {
 };
 
 const getCommentsByArticleID = (id) => {
-  if (isNaN(id)) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
-  }
+
   return db
   .query(
   `SELECT *  FROM comments
@@ -71,9 +69,6 @@ const getCommentsByArticleID = (id) => {
   [id]
   )
   .then((data) => {
-    if (!data.rows.length || data.rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "Not found" });
-    }
   return data.rows;
   });
   }

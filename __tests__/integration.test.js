@@ -132,12 +132,12 @@ it('should correctly return array of objects with a status 200 code', () => {
     });
   })
 });
-it('should return 404 when passed an article id that does not exist', () => {
+it('should return 200 and an empty array when passed an article id that does not exist', () => {
   return request(app)
   .get('/api/articles/999/comments')
-  .expect(404)
+  .expect(200)
   .then((res) => {
-    expect(res.body.error).toBe('Not found');
+    expect(res.body.comments).toEqual([]);  
   })
 });
 it('should return 400 when passed an invalid type of article id', () => {
@@ -145,7 +145,7 @@ it('should return 400 when passed an invalid type of article id', () => {
   .get('/api/articles/dog/comments')
   .expect(400)
   .then((res) => {
-    expect(res.body.error).toBe('Bad request');
+    expect(res.body.msg).toBe('Bad request');
   })
 })
 it('should return object with correct  order', () => {
