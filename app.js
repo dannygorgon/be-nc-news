@@ -4,6 +4,7 @@ const {
   getTopics,
   getAPI,
   getArticleByID,
+  getArticles,
 } = require("./controllers/controller");
 
 const {
@@ -15,6 +16,7 @@ const {
 app.get("/api/topics", getTopics);
 app.get("/api", getAPI);
 app.get("/api/articles/:id", getArticleByID);
+app.get("/api/articles", getArticles);
 
 app.use(handlePSQLErrors);
 app.use(handleCustomErrors);
