@@ -122,6 +122,7 @@ it('should correctly return array of objects with a status 200 code', () => {
   .expect(200)
   .then((res) => {
     const {comments} = res.body
+    console.log(res.body);
     comments.forEach((comment) => {
       expect(typeof comment.comment_id).toBe('number');
       expect(typeof comment.votes).toBe('number');
@@ -130,6 +131,14 @@ it('should correctly return array of objects with a status 200 code', () => {
       expect(typeof comment.body).toBe('string');
       expect(typeof comment.article_id).toBe('number');
     });
+  })
+});
+it('should return 404 when passed an article id that does not exist', () => {
+  return request(app)
+  .get('/api/articles/999/comments')
+  .expect(404)
+  .then((res) => {
+    expect(res.body.error).toBe('Not found');
   })
 });
 })
