@@ -91,7 +91,6 @@ describe('getArticles', () => {
     .expect(200)
     .then((res) => {
       const {articles} = res.body
-
       articles.forEach((article) => {
         expect(typeof article.author).toBe('string');
         expect(typeof article.title).toBe('string');
@@ -122,7 +121,7 @@ it('should correctly return array of objects with a status 200 code', () => {
   .expect(200)
   .then((res) => {
     const {comments} = res.body
-    console.log(res.body);
+    expect(comments).toHaveLength(11);
     comments.forEach((comment) => {
       expect(typeof comment.comment_id).toBe('number');
       expect(typeof comment.votes).toBe('number');
@@ -149,12 +148,11 @@ it('should return 400 when passed an invalid type of article id', () => {
     expect(res.body.error).toBe('Bad request');
   })
 })
-it('should return object with correct length and order', () => {
+it('should return object with correct  order', () => {
   return request(app)
   .get('/api/articles/1/comments')
   .then((res) => {
     const {comments} = res.body
-    expect(comments).toHaveLength(11);
     expect(comments).toBeSortedBy('created_at', {descending: true});
   })
 });
