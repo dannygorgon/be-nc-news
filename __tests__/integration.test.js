@@ -91,7 +91,6 @@ describe('getArticles', () => {
     .expect(200)
     .then((res) => {
       const {articles} = res.body
-
       articles.forEach((article) => {
         expect(typeof article.author).toBe('string');
         expect(typeof article.title).toBe('string');
@@ -115,3 +114,56 @@ describe('getArticles', () => {
   });
 });
 
+describe('getCommentsByID', () => {
+it('should correctly return array of objects with a status 200 code', () => {
+  return request(app)
+  .get('/api/articles/1/comments')
+  .expect(200)
+  .then((res) => {
+    const {comments} = res.body
+    expect(comments).toHaveLength(11);
+    comments.forEach((comment) => {
+      expect(typeof comment.comment_id).toBe('number');
+      expect(typeof comment.votes).toBe('number');
+      expect(typeof comment.created_at).toBe('string');
+      expect(typeof comment.author).toBe('string');
+      expect(typeof comment.body).toBe('string');
+      expect(typeof comment.article_id).toBe('number');
+    });
+  })
+});
+it('should return a 404 whenn passed an article id that does not exist', () => {
+  return request(app)
+  .get('/api/articles/999/comments')
+  .expect(404)
+  .then((res) => {
+    expect(res.body.error).toBe('Not found');
+  })
+});
+it('should return 400 when passed an invalid type of article id', () => {
+  return request(app)
+  .get('/api/articles/dog/comments')
+  .expect(400)
+  .then((res) => {
+    expect(res.body.msg).toBe('Bad request');
+  })
+})
+it('should return object with correct  order', () => {
+  return request(app)
+  .get('/api/articles/1/comments')
+  .then((res) => {
+    const {comments} = res.body
+    expect(comments).toBeSortedBy('created_at', {descending: true});
+  })
+});
+it('should return 200 and an empty object when passed an article_id that exists, but has no comments', () => {
+  return request(app)
+  .get('/api/articles/4/comments')
+  .expect(200)
+  .then((res) => {
+    const {comments} = res.body
+    expect(comments).toHaveLength(0);
+    expect(comments).toEqual([]); 
+  })
+});
+})

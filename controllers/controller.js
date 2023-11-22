@@ -3,6 +3,8 @@ const {
   getAllEndpoints,
   getArticlesByID,
   getAllArticles,
+  getCommentsByArticleID
+
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");
@@ -36,4 +38,14 @@ exports.getArticles = (req, res, next) => {
   getAllArticles().then((articles) => {
     res.status(200).send({ articles });
   })
+}
+
+
+exports.getCommentsByID = (req, res, next) => {
+const { id } = req.params;
+getCommentsByArticleID(id).then((comments) => {
+res.status(200).send({ comments });
+}).catch((err) => {
+next(err)
+})
 }
