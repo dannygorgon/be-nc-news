@@ -87,7 +87,7 @@ const postNewComment = (article_id, author, body) => {
     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
     .then(({ rows: articles }) => {
       if (!articles.length)
-        return Promise.reject({ status: 404, msg: "Article not found" });
+        return Promise.reject({ status: 404, msg: "Not found" });
       return db.query("SELECT * FROM users WHERE username = $1", [author]);
     })
     .then(({ rows: users }) => {

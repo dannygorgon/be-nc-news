@@ -123,12 +123,14 @@ describe("getCommentsByID", () => {
         const { comments } = res.body;
         expect(comments).toHaveLength(11);
         comments.forEach((comment) => {
-          expect(typeof comment.comment_id).toBe("number");
-          expect(typeof comment.votes).toBe("number");
-          expect(typeof comment.created_at).toBe("string");
-          expect(typeof comment.author).toBe("string");
-          expect(typeof comment.body).toBe("string");
-          expect(typeof comment.article_id).toBe("number");
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
         });
       });
   });
@@ -145,7 +147,7 @@ describe("getCommentsByID", () => {
       .get("/api/articles/dog/comments")
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("Bad request");
+        expect(res.body.error).toBe("Bad request");
       });
   });
   it("should return object with correct  order", () => {
@@ -156,7 +158,7 @@ describe("getCommentsByID", () => {
         expect(comments).toBeSortedBy("created_at", { descending: true });
       });
   });
-  it("should return 200 and an empty object when passed an article_id that exists, but has no comments", () => {
+  it("should return 200 and an empty array when passed an article_id that exists, but has no comments", () => {
     return request(app)
       .get("/api/articles/4/comments")
       .expect(200)
@@ -179,11 +181,12 @@ describe("postComment", () => {
       .send(newComment)
       .expect(201)
       .then((response) => {
-        // check the response body
-        expect(response.body.comment.comment_id).toBe(19);
-        expect(response.body.comment.author).toBe("butter_bridge");
-        expect(response.body.comment.article_id).toBe(5);
-        expect(response.body.comment.body).toBe("I am a new mensaje");
+        expect(response.body.comment).toMatchObject({
+          comment_id: 19,
+          author: "butter_bridge",
+          article_id: 5,
+          body: "I am a new mensaje",
+        });
       });
   });
   it("POST:400 responds with an appropriate status and error message when provided an input with no body", () => {
@@ -217,7 +220,7 @@ describe("postComment", () => {
       })
       .expect(404)
       .then((response) => {
-        expect(response.body.error).toBe("Article not found");
+        expect(response.body.error).toBe("Not found");
       });
   });
 });
