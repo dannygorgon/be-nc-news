@@ -3,7 +3,8 @@ const {
   getAllEndpoints,
   getArticlesByID,
   getAllArticles,
-  getCommentsByArticleID
+  getCommentsByArticleID,
+  postNewComment
 
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
@@ -48,4 +49,19 @@ res.status(200).send({ comments });
 }).catch((err) => {
 next(err)
 })
+}
+
+exports.postComment = (req, res, next) => {
+  console.log(req.params);
+  const { id } = req.params;
+
+  const{ username, body } = req.body;
+  postNewComment(id, username, body )
+    .then((comment) => {
+      console.log(comment);
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
 }
