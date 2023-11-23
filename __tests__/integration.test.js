@@ -289,6 +289,23 @@ describe('patchArticleByID', () => {
       });
     });
   });
+  it('Should return 200 plus original object unchanged when no inc_votes is passed. ', () => {
+    return request(app)
+    .patch("/api/articles/5/")
+    .send()
+    .expect(200)
+    .then((response) => {
+      expect(response.body.article).toMatchObject({
+        article_id: 5,
+        title: expect.any(String),
+        body: expect.any(String),
+        votes: 0,
+        topic: expect.any(String),
+        author: expect.any(String),
+        created_at: expect.any(String),
+      });
+    });
+  });
   it("should return a 404 when passed an article id that does not exist", () => {
     return request(app)
       .patch("/api/articles/15")
