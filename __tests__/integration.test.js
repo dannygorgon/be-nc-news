@@ -237,7 +237,8 @@ describe("postComment", () => {
   });
 });
 describe('patchArticleByID', () => {
-  test('Should correctly update specified article ', () => {
+  it('Should correctly update specified article when passed positive integer ', () => {
+    
     return request(app)
     .patch("/api/articles/5/")
     .send({inc_votes: 2})
@@ -254,7 +255,41 @@ describe('patchArticleByID', () => {
       });
     });
   });
-  it("should return a 404 whenn passed an article id that does not exist", () => {
+  it('Should correctly update specified article when passed negative integer ', () => {
+    return request(app)
+    .patch("/api/articles/1/")
+    .send({inc_votes: -50})
+    .expect(200)
+    .then((response) => {
+      expect(response.body.article).toMatchObject({
+        article_id: 1,
+        title: expect.any(String),
+        body: expect.any(String),
+        votes: 50,
+        topic: expect.any(String),
+        author: expect.any(String),
+        created_at: expect.any(String),
+      });
+    });
+  });
+  it('Should correctly update specified article when passed negative integer ', () => {
+    return request(app)
+    .patch("/api/articles/5/")
+    .send({inc_votes: 0})
+    .expect(200)
+    .then((response) => {
+      expect(response.body.article).toMatchObject({
+        article_id: 5,
+        title: expect.any(String),
+        body: expect.any(String),
+        votes: 0,
+        topic: expect.any(String),
+        author: expect.any(String),
+        created_at: expect.any(String),
+      });
+    });
+  });
+  it("should return a 404 when passed an article id that does not exist", () => {
     return request(app)
       .patch("/api/articles/15")
       .expect(404)
@@ -263,4 +298,23 @@ describe('patchArticleByID', () => {
         expect(res.body.error).toBe("Not found");
       });
   });
+  it('should return a 400 when passed invalid vote value', () => {
+    return request(app)
+    .patch("/api/articles/5/")
+    .send({inc_votes: 'dog'})
+    .expect(400)
+    .then((response) => {
+      expect(response.body.error).toBe("Bad request");
+    });
+  });
+  it('should return a 400 when passed invalid article_id value', () => {
+    return request(app)
+    .patch("/api/articles/foo/")
+    .send({inc_votes: 5})
+    .expect(400)
+    .then((response) => {
+      expect(response.body.error).toBe("Bad request");
+    });
+  });
 });
+
