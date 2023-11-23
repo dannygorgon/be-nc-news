@@ -223,4 +223,16 @@ describe("postComment", () => {
         expect(response.body.error).toBe("Not found");
       });
   });
+  it("POST:404 responds with appropriate error message and status when a non-existent username is passed.", () => {
+    return request(app) // post new comment to the API
+      .post("/api/articles/152/comments")
+      .send({
+        username: "butter_bri3dge",
+        body: "I am a new mensaje",
+      })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.error).toBe("Not found");
+      });
+  });
 });
