@@ -254,4 +254,13 @@ describe('patchArticleByID', () => {
       });
     });
   });
+  it("should return a 404 whenn passed an article id that does not exist", () => {
+    return request(app)
+      .patch("/api/articles/15")
+      .expect(404)
+      .send({inc_votes: 2})
+      .then((res) => {
+        expect(res.body.error).toBe("Not found");
+      });
+  });
 });
