@@ -5,6 +5,7 @@ const {
   getAllArticles,
   getCommentsByArticleID,
   postNewComment,
+  patchArticleVotesByID,
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");
@@ -64,3 +65,15 @@ exports.postComment = (req, res, next) => {
       next(err);
     });
 };
+
+exports.patchArticleByID = (req, res, next) => {
+  const { id } = req.params;
+  const { inc_votes } = req.body;
+  patchArticleVotesByID(id, inc_votes)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}

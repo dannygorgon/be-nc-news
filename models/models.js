@@ -105,6 +105,29 @@ const postNewComment = (article_id, author, body) => {
     });
 };
 
+const patchArticleVotesByID = (id, inc_votes) => {
+  if (inc_votes === undefined) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1;`, [id])
+    .then((article) => {
+      if (!article.rows.length) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      return db
+        .query(
+          `UPDATE articles SET votes = votes + $2 WHERE article_id = $1 RETURNING *;`,
+          [id, inc_votes]
+        )
+        .then((data) => {
+          if (!data.rows.length) {
+            return Promise.reject({ status: 404, msg: "Not found" });
+          }
+          return data.rows[0];
+        });
+    });
+};
 module.exports = {
   getAllTopics,
   getAllEndpoints,
@@ -112,4 +135,5 @@ module.exports = {
   getAllArticles,
   getCommentsByArticleID,
   postNewComment,
+  patchArticleVotesByID,
 };
