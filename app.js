@@ -6,7 +6,8 @@ const {
   getArticleByID,
   getArticles,
   getCommentsByID,
-  postComment
+  postComment,
+  patchArticleByID
 } = require("./controllers/controller");
 
 const {
@@ -25,7 +26,7 @@ app.get("/api/articles/:id/comments", getCommentsByID);
 
 app.post("/api/articles/:id/comments", postComment)
 
-
+app.patch("/api/articles/:id", patchArticleByID);
 
 app.use(handlePSQLErrors);
 app.use(handleCustomErrors);

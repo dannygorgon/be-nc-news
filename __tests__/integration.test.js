@@ -236,3 +236,22 @@ describe("postComment", () => {
       });
   });
 });
+describe('patchArticleByID', () => {
+  test('Should correctly update specified article ', () => {
+    return request(app)
+    .patch("/api/articles/5/")
+    .send({inc_votes: 2})
+    .expect(200)
+    .then((response) => {
+      expect(response.body.article).toMatchObject({
+        article_id: 5,
+        title: expect.any(String),
+        body: expect.any(String),
+        votes: 2,
+        topic: expect.any(String),
+        author: expect.any(String),
+        created_at: expect.any(String),
+      });
+    });
+  });
+});
