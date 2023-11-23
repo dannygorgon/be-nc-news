@@ -3,8 +3,8 @@ const {
   getAllEndpoints,
   getArticlesByID,
   getAllArticles,
-  getCommentsByArticleID
-
+  getCommentsByArticleID,
+  postNewComment,
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");
@@ -27,25 +27,40 @@ exports.getArticleByID = (req, res, next) => {
   const { id } = req.params;
   getArticlesByID(id)
     .then((article) => {
-res.status(200).send({ article });
-})
+      res.status(200).send({ article });
+    })
     .catch((err) => {
-      next(err)
+      next(err);
     });
 };
 
 exports.getArticles = (req, res, next) => {
   getAllArticles().then((articles) => {
     res.status(200).send({ articles });
-  })
-}
-
+  });
+};
 
 exports.getCommentsByID = (req, res, next) => {
-const { id } = req.params;
-getCommentsByArticleID(id).then((comments) => {
-res.status(200).send({ comments });
-}).catch((err) => {
-next(err)
-})
-}
+  const { id } = req.params;
+  getCommentsByArticleID(id)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postComment = (req, res, next) => {
+  const { id } = req.params;
+
+  const { username, body } = req.body;
+
+  postNewComment(id, username, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};

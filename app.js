@@ -5,9 +5,8 @@ const {
   getAPI,
   getArticleByID,
   getArticles,
-  getCommentsByID
-
-  
+  getCommentsByID,
+  postComment
 } = require("./controllers/controller");
 
 const {
@@ -16,11 +15,15 @@ const {
     handleServerErrors,
   } = require("./errors");
 
+app.use(express.json());
+
 app.get("/api/topics", getTopics);
 app.get("/api", getAPI);
 app.get("/api/articles/:id", getArticleByID);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:id/comments", getCommentsByID);
+
+app.post("/api/articles/:id/comments", postComment)
 
 
 
