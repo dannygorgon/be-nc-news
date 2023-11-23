@@ -79,27 +79,31 @@ const getCommentsByArticleID = (id) => {
     });
 };
 
-const postNewComment = ( article_id, author, body) => {
+const postNewComment = (article_id, author, body) => {
+  if (!author || !body) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
   return db
-  .query('SELECT * FROM articles WHERE article_id = $1', [article_id])
-  .then(({ rows: articles }) => {
-    if (!articles.length) throw new Error('Article not found');
-
-    return db.query('SELECT * FROM users WHERE username = $1', [author]);
-  })
-  .then(({ rows: users }) => {
-    if (!users.length) throw new Error('User not found');
-  return db
-  .query(
-    `INSERT INTO comments (article_id, author, body)
-    VALUES ($1, $2, $3) RETURNING *;`,
-    [article_id, author, body]
-  )
-  .then(({ rows: [comment] }) => {
-    return comment;
-  });
-})
-}
+    .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
+    .then(({ rows: articles }) => {
+      if (!articles.length)
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      return db.query("SELECT * FROM users WHERE username = $1", [author]);
+    })
+    .then(({ rows: users }) => {
+      if (!users.length)
+        return Promise.reject({ status: 404, msg: "User not found" });
+      return db
+        .query(
+          `INSERT INTO comments (article_id, author, body)
+          VALUES ($1, $2, $3) RETURNING *;`,
+          [article_id, author, body]
+        )
+        .then(({ rows: [comment] }) => {
+          return comment;
+        });
+    });
+};
 
 module.exports = {
   getAllTopics,
@@ -107,5 +111,5 @@ module.exports = {
   getArticlesByID,
   getAllArticles,
   getCommentsByArticleID,
-  postNewComment
+  postNewComment,
 };

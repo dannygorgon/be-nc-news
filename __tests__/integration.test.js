@@ -84,86 +84,140 @@ describe("getArticleByID", () => {
   });
 });
 
-describe('getArticles', () => {
-  it('should return status 200 and the correct object', () => {
+describe("getArticles", () => {
+  it("should return status 200 and the correct object", () => {
     return request(app)
-    .get('/api/articles')
-    .expect(200)
-    .then((res) => {
-      const {articles} = res.body
-      articles.forEach((article) => {
-        expect(typeof article.author).toBe('string');
-        expect(typeof article.title).toBe('string');
-        expect(typeof article.article_id).toBe('number');
-        expect(typeof article.topic).toBe('string');
-        expect(typeof article.created_at).toBe('string');
-        expect(typeof article.votes).toBe('number');
-        expect(typeof article.article_img_url).toBe('string');
-        expect(typeof article.comment_count).toBe('string');
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        const { articles } = res.body;
+        articles.forEach((article) => {
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("string");
+        });
       });
-    })
   });
-  it('should return the object in the correct order, with correct length and order', () => {
+  it("should return the object in the correct order, with correct length and order", () => {
     return request(app)
-    .get('/api/articles')
-    .then((res) => {
-      const {articles} = res.body
-      expect(articles).toHaveLength(13);
-      expect(articles).toBeSortedBy('created_at', {descending: true});
-    })
+      .get("/api/articles")
+      .then((res) => {
+        const { articles } = res.body;
+        expect(articles).toHaveLength(13);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
   });
 });
 
-describe('getCommentsByID', () => {
-it('should correctly return array of objects with a status 200 code', () => {
-  return request(app)
-  .get('/api/articles/1/comments')
-  .expect(200)
-  .then((res) => {
-    const {comments} = res.body
-    expect(comments).toHaveLength(11);
-    comments.forEach((comment) => {
-      expect(typeof comment.comment_id).toBe('number');
-      expect(typeof comment.votes).toBe('number');
-      expect(typeof comment.created_at).toBe('string');
-      expect(typeof comment.author).toBe('string');
-      expect(typeof comment.body).toBe('string');
-      expect(typeof comment.article_id).toBe('number');
-    });
-  })
+describe("getCommentsByID", () => {
+  it("should correctly return array of objects with a status 200 code", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments).toHaveLength(11);
+        comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+      });
+  });
+  it("should return a 404 whenn passed an article id that does not exist", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.error).toBe("Not found");
+      });
+  });
+  it("should return 400 when passed an invalid type of article id", () => {
+    return request(app)
+      .get("/api/articles/dog/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad request");
+      });
+  });
+  it("should return object with correct  order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  it("should return 200 and an empty object when passed an article_id that exists, but has no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments).toHaveLength(0);
+        expect(comments).toEqual([]);
+      });
+  });
 });
-it('should return a 404 whenn passed an article id that does not exist', () => {
-  return request(app)
-  .get('/api/articles/999/comments')
-  .expect(404)
-  .then((res) => {
-    expect(res.body.error).toBe('Not found');
-  })
+
+describe("postComment", () => {
+  it("POST:201 inserts a new comment to the db and sends the new team back to the client", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "I am a new mensaje",
+    };
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        // check the response body
+        expect(response.body.comment.comment_id).toBe(19);
+        expect(response.body.comment.author).toBe("butter_bridge");
+        expect(response.body.comment.article_id).toBe(5);
+        expect(response.body.comment.body).toBe("I am a new mensaje");
+      });
+  });
+  it("POST:400 responds with an appropriate status and error message when provided an input with no body", () => {
+    return request(app) // post new comment to the API
+      .post("/api/articles/5/comments")
+      .send({
+        username: "tickle122",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.error).toBe("Bad request");
+      });
+  });
+  it("POST:400 responds with an appropriate status and error message when provided an input with no username", () => {
+    return request(app) // post new comment to the API
+      .post("/api/articles/5/comments")
+      .send({
+        body: "I am a new mensaje",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.error).toBe("Bad request");
+      });
+  });
+  it("POST:404 responds with an appropriate status and error message when non-existent article_id is passed", () => {
+    return request(app) // post new comment to the API
+      .post("/api/articles/152/comments")
+      .send({
+        username: "butter_bridge",
+        body: "I am a new mensaje",
+      })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.error).toBe("Article not found");
+      });
+  });
 });
-it('should return 400 when passed an invalid type of article id', () => {
-  return request(app)
-  .get('/api/articles/dog/comments')
-  .expect(400)
-  .then((res) => {
-    expect(res.body.msg).toBe('Bad request');
-  })
-})
-it('should return object with correct  order', () => {
-  return request(app)
-  .get('/api/articles/1/comments')
-  .then((res) => {
-    const {comments} = res.body
-    expect(comments).toBeSortedBy('created_at', {descending: true});
-  })
-});
-it('should return 200 and an empty object when passed an article_id that exists, but has no comments', () => {
-  return request(app)
-  .get('/api/articles/4/comments')
-  .expect(200)
-  .then((res) => {
-    const {comments} = res.body
-    expect(comments).toHaveLength(0);
-    expect(comments).toEqual([]); 
-  })
-});
-})
