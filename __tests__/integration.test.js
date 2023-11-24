@@ -350,4 +350,12 @@ describe('deleteComment', () => {
     .delete('/api/comments/1')
     .expect(204)
   });
+  test("should return 404 when passed a comment_id that does not exist", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.error).toBe("Not found");
+      });
+  })
 });
