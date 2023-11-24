@@ -146,6 +146,14 @@ const deleteComment = (id) => {
         });
     });
 }
+
+const getAllUsers = () => {
+  return db.query(`SELECT * FROM users;`).then((data) => {
+    return data.rows;
+  });
+}
+
+
 module.exports = {
   getAllTopics,
   getAllEndpoints,
@@ -154,5 +162,6 @@ module.exports = {
   getCommentsByArticleID,
   postNewComment,
   patchArticleVotesByID,
-  deleteComment
+  deleteComment,
+  getAllUsers
 };

@@ -6,7 +6,8 @@ const {
   getCommentsByArticleID,
   postNewComment,
   patchArticleVotesByID,
-  deleteComment
+  deleteComment,
+  getAllUsers
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");
@@ -87,5 +88,12 @@ exports.deleteCommentByID = (req, res, next) => {
   })
   .catch((err) => {
     next(err)
+  })
+}
+
+exports.getUsers = (req, res, next) => {
+  getAllUsers()
+  .then((users) => {
+    res.status(200).send({users})
   })
 }
