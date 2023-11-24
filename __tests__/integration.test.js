@@ -125,14 +125,22 @@ describe("getArticles", () => {
       });
     })
   });
-  it('should return status 200 plus empty array when topic does not exist', () => {
+  it('should return status 200 plus empty array when topic exists but isn\'t present in articles table', () => {
     return request(app)
-    .get("/api/articles?topic=dogs")
+    .get("/api/articles?topic=paper")
     .expect(200)
     .then((res) => {
       const { articles } = res.body;
       expect(articles).toHaveLength(0);
       expect(articles).toEqual([]);
+    })
+  });
+  it('should return status 404when topic does not exist in articles table', () => {
+    return request(app)
+    .get("/api/articles?topic=mining")
+    .expect(404)
+    .then((res) => {
+      expect(res.body.error).toBe("Not found");
     })
   });
 });
