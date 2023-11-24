@@ -103,30 +103,32 @@ describe("getArticles", () => {
         });
       });
   });
-  it("should return the object in the correct order, with correct length and order", () => {
+  it("should return status 200 plus the object in the correct order, with correct length and order", () => {
     return request(app)
       .get("/api/articles")
+      .expect(200)
       .then((res) => {
         const { articles } = res.body;
         expect(articles).toHaveLength(13);
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  it('should return correct object when passed "topic" as a query', () => {
+  it('should return correct object when passed "topic" as a query and status 200', () => {
     return request(app)
     .get("/api/articles?topic=mitch")
+    .expect(200)
     .then((res) => {
       const { articles } = res.body;
       expect(articles).toHaveLength(12);
       articles.forEach((article) => {
-        console.log(article);
         expect(article.topic).toBe("mitch");
       });
     })
   });
-  it('should return empty array when topic does not exist', () => {
+  it('should return status 200 plus empty array when topic does not exist', () => {
     return request(app)
     .get("/api/articles?topic=dogs")
+    .expect(200)
     .then((res) => {
       const { articles } = res.body;
       expect(articles).toHaveLength(0);
