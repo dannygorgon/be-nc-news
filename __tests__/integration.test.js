@@ -345,12 +345,12 @@ describe("patchArticleByID", () => {
 });
 
 describe('deleteComment', () => {
-  test('should return a 204', () => {
+  it('should return a 204', () => {
     return request(app)
     .delete('/api/comments/1')
     .expect(204)
   });
-  test("should return 404 when passed a comment_id that does not exist", () => {
+  it("should return 404 when passed a comment_id that does not exist", () => {
     return request(app)
       .delete("/api/comments/999")
       .expect(404)
@@ -358,4 +358,12 @@ describe('deleteComment', () => {
         expect(res.body.error).toBe("Not found");
       });
   })
+  it('should return 400 when passed invalid id', () => {
+    return request(app)
+    .delete('/api/comments/dog')
+    .expect(400)
+    .then((res) => {
+      expect(res.body.error).toBe("Bad request")
+    })
+  });
 });
