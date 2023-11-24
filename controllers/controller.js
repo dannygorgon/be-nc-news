@@ -42,8 +42,11 @@ exports.getArticles = (req, res, next) => {
   const { topic } = req.query;
   getAllArticles(topic).then((articles) => {
     res.status(200).send({ articles });
+  }).catch((err) => {
+    next(err);
   });
-};
+}
+
 
 exports.getCommentsByID = (req, res, next) => {
   const { id } = req.params;
