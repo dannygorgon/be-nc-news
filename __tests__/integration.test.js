@@ -112,6 +112,27 @@ describe("getArticles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  it('should return correct object when passed "topic" as a query', () => {
+    return request(app)
+    .get("/api/articles?topic=mitch")
+    .then((res) => {
+      const { articles } = res.body;
+      expect(articles).toHaveLength(12);
+      articles.forEach((article) => {
+        console.log(article);
+        expect(article.topic).toBe("mitch");
+      });
+    })
+  });
+  it('should return empty array when topic does not exist', () => {
+    return request(app)
+    .get("/api/articles?topic=dogs")
+    .then((res) => {
+      const { articles } = res.body;
+      expect(articles).toHaveLength(0);
+      expect(articles).toEqual([]);
+    })
+  });
 });
 
 describe("getCommentsByID", () => {
