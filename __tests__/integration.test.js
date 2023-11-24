@@ -344,14 +344,14 @@ describe("patchArticleByID", () => {
   });
 });
 
-describe('deleteComment', () => {
-  it('should return a 204 and an empty body', () => {
+describe("deleteComment", () => {
+  it("should return a 204 and an empty body", () => {
     return request(app)
-    .delete('/api/comments/1')
-    .expect(204)
-    .expect((res) => {
-      expect(res.body).toEqual({})
-    })
+      .delete("/api/comments/1")
+      .expect(204)
+      .expect((res) => {
+        expect(res.body).toEqual({});
+      });
   });
   it("should return 404 when passed a comment_id that does not exist", () => {
     return request(app)
@@ -360,33 +360,32 @@ describe('deleteComment', () => {
       .then((res) => {
         expect(res.body.error).toBe("Not found");
       });
-  })
-  it('should return 400 when passed invalid id', () => {
-    return request(app)
-    .delete('/api/comments/dog')
-    .expect(400)
-    .then((res) => {
-      expect(res.body.error).toBe("Bad request")
-    })
   });
-
+  it("should return 400 when passed invalid id", () => {
+    return request(app)
+      .delete("/api/comments/dog")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.error).toBe("Bad request");
+      });
+  });
 });
 
-describe('getUsers', () => {
-  it('should return 200 and the correct object', () => {
+describe("getUsers", () => {
+  it("should return 200 and the correct object", () => {
     return request(app)
-    .get('/api/users')
-    .expect(200)
-    .then((res) => {
-      const {users} = res.body
-      expect(users).toHaveLength(4)
-      users.forEach((user) => {
-        expect(user).toMatchObject({
-          username: expect.any(String),
-          avatar_url: expect.any(String),
-          name: expect.any(String)
-        })
-      })
-    })
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        const { users } = res.body;
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            avatar_url: expect.any(String),
+            name: expect.any(String),
+          });
+        });
+      });
   });
 });
