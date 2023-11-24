@@ -6,6 +6,7 @@ const {
   getCommentsByArticleID,
   postNewComment,
   patchArticleVotesByID,
+  deleteComment
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");
@@ -76,4 +77,15 @@ exports.patchArticleByID = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+}
+
+exports.deleteCommentByID = (req, res, next) => {
+  const {id} = req.params
+  deleteComment(id)
+  .then((comment) => {
+    res.status(204).send({comment})
+  })
+  .catch((err) => {
+    next(err)
+  })
 }
