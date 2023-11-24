@@ -30,34 +30,41 @@ const getArticlesByID = (id) => {
     });
 };
 
-const getAllArticles = () => {
-  return db
-    .query(
-      `
-  SELECT 
-  articles.author, 
-  articles.title, 
-  articles.article_id, 
-  articles.topic, 
-  articles.created_at, 
-  articles.votes, 
-  articles.article_img_url, 
-  COUNT(comments.comment_id) AS comment_count 
-  FROM articles 
-  LEFT JOIN comments ON articles.article_id = comments.article_id 
-  GROUP BY 
-  articles.author, 
-  articles.title, 
-  articles.article_id, 
-  articles.topic, 
-  articles.created_at, 
-  articles.votes, 
-  articles.article_img_url 
-  ORDER BY created_at DESC;`
-    )
-    .then((data) => {
-      return data.rows;
-    });
+const getAllArticles = (topic) => {
+  let dbQuery = `
+    SELECT 
+    articles.author, 
+    articles.title, 
+    articles.article_id, 
+    articles.topic, 
+    articles.created_at, 
+    articles.votes, 
+    articles.article_img_url, 
+    COUNT(comments.comment_id) AS comment_count 
+    FROM articles 
+    LEFT JOIN comments ON articles.article_id = comments.article_id`;
+
+  let params = [];
+
+  if (topic) {
+    dbQuery += ' WHERE articles.topic = $1';
+    params.push(topic);
+  }
+
+  dbQuery += ` 
+    GROUP BY 
+    articles.author, 
+    articles.title, 
+    articles.article_id, 
+    articles.topic, 
+    articles.created_at, 
+    articles.votes, 
+    articles.article_img_url
+    ORDER BY created_at DESC;`;
+
+  return db.query(dbQuery, params).then((data) => {
+    return data.rows;
+  });
 };
 
 const getCommentsByArticleID = (id) => {

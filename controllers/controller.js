@@ -11,6 +11,7 @@ const {
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");
+const { query } = require("../db/connection");
 
 exports.getTopics = (req, res, next) => {
   getAllTopics()
@@ -38,7 +39,8 @@ exports.getArticleByID = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  getAllArticles().then((articles) => {
+  const {topic} = req.query
+  getAllArticles(topic).then((articles) => {
     res.status(200).send({ articles });
   });
 };
