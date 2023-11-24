@@ -47,7 +47,7 @@ const getAllArticles = (topic) => {
   let params = [];
 
   if (topic) {
-    dbQuery += ' WHERE articles.topic = $1';
+    dbQuery += " WHERE articles.topic = $1";
     params.push(topic);
   }
 
@@ -152,14 +152,13 @@ const deleteComment = (id) => {
           return data.rows[0];
         });
     });
-}
+};
 
 const getAllUsers = () => {
   return db.query(`SELECT * FROM users;`).then((data) => {
     return data.rows;
   });
-}
-
+};
 
 module.exports = {
   getAllTopics,
@@ -170,5 +169,5 @@ module.exports = {
   postNewComment,
   patchArticleVotesByID,
   deleteComment,
-  getAllUsers
+  getAllUsers,
 };

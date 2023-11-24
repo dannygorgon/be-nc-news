@@ -7,7 +7,7 @@ const {
   postNewComment,
   patchArticleVotesByID,
   deleteComment,
-  getAllUsers
+  getAllUsers,
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");
@@ -39,7 +39,7 @@ exports.getArticleByID = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const {topic} = req.query
+  const { topic } = req.query;
   getAllArticles(topic).then((articles) => {
     res.status(200).send({ articles });
   });
@@ -80,22 +80,21 @@ exports.patchArticleByID = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-}
+};
 
 exports.deleteCommentByID = (req, res, next) => {
-  const {id} = req.params
+  const { id } = req.params;
   deleteComment(id)
-  .then((comment) => {
-    res.status(204).send({comment})
-  })
-  .catch((err) => {
-    next(err)
-  })
-}
+    .then((comment) => {
+      res.status(204).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.getUsers = (req, res, next) => {
-  getAllUsers()
-  .then((users) => {
-    res.status(200).send({users})
-  })
-}
+  getAllUsers().then((users) => {
+    res.status(200).send({ users });
+  });
+};
