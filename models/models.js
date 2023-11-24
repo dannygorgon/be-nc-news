@@ -128,6 +128,24 @@ const patchArticleVotesByID = (id, inc_votes) => {
         });
     });
 };
+
+const deleteComment = (id) => {
+  return db
+    .query(`SELECT * FROM comments WHERE comment_id = $1;`, [id])
+    .then((comment) => {
+      if (!comment.rows.length) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      return db
+        .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`, [id])
+        .then((data) => {
+          if (!data.rows.length) {
+            return Promise.reject({ status: 404, msg: "Not found" });
+          }
+          return data.rows[0];
+        });
+    });
+}
 module.exports = {
   getAllTopics,
   getAllEndpoints,
@@ -136,4 +154,5 @@ module.exports = {
   getCommentsByArticleID,
   postNewComment,
   patchArticleVotesByID,
+  deleteComment
 };

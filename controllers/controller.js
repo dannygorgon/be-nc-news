@@ -6,6 +6,7 @@ const {
   getCommentsByArticleID,
   postNewComment,
   patchArticleVotesByID,
+  deleteComment
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 const { get } = require("../app");

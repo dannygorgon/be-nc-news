@@ -348,5 +348,6 @@ describe('deleteComment', () => {
   test('should return a 204', () => {
     return request(app)
     .delete('/api/comments/1')
+    .expect(204)
   });
 });
