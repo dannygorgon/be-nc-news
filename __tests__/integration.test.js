@@ -60,6 +60,7 @@ describe("getArticleByID", () => {
           topic: "mitch",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
+          comment_count: 11,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         };
@@ -81,6 +82,27 @@ describe("getArticleByID", () => {
       .then((res) => {
         expect(res.body.error).toBe("Bad request");
       });
+  });
+  it('should return correct article with correct comment count', () => {
+    return request(app)
+    .get("/api/articles/1")
+    .expect(200)
+    .then((res) => {
+      const { article } = res.body;
+      console.log(article);
+      const expectedArticle = {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        body: "I find this existence challenging",
+        votes: 100,
+        topic: "mitch",
+        author: "butter_bridge",
+        created_at: "2020-07-09T20:11:00.000Z",
+        article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        comment_count: 11
+      };
+      expect(article).toMatchObject(expectedArticle);
+    })
   });
 });
 
