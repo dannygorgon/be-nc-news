@@ -35,6 +35,22 @@ const getArticlesByID = (id) => {
 };
 
 const getAllArticles = (topic) => {
+  if (topic) {
+    return db.query('SELECT * FROM topics WHERE slug = $1', [topic])
+      .then((data) => {
+        if (data.rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "Not found" });
+        } else {
+          return fetchArticles(topic);
+        }
+      });
+  } else {
+
+    return fetchArticles();
+  }
+};
+
+const fetchArticles = (topic) => {
   let dbQuery = `
     SELECT 
     articles.author, 
@@ -45,9 +61,8 @@ const getAllArticles = (topic) => {
     articles.votes, 
     articles.article_img_url, 
     COUNT(comments.comment_id) AS comment_count 
-    FROM articles 
-    LEFT JOIN comments ON articles.article_id = comments.article_id
-    LEFT JOIN topics ON articles.topic = topics.slug`;
+    FROM articles
+    LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
   let params = [];
 
@@ -56,7 +71,7 @@ const getAllArticles = (topic) => {
     params.push(topic);
   }
 
-  dbQuery += ` 
+  dbQuery += `
     GROUP BY 
     articles.author, 
     articles.title, 
@@ -67,18 +82,9 @@ const getAllArticles = (topic) => {
     articles.article_img_url
     ORDER BY created_at DESC;`;
 
-    return db.query(dbQuery, params).then((data) => {
-      if (!data.rows.length && topic) {
-        return db.query('SELECT * FROM topics WHERE slug = $1', [topic])
-          .then((topicData) => {
-            if (!topicData.rows.length) {
-              return Promise.reject({ status: 404, msg: "Not found" });
-            }
-            return data.rows;
-          });
-      }
-      return data.rows;
-    });
+  return db.query(dbQuery, params).then((data) => {
+    return data.rows;
+  });
 };
 
 const getCommentsByArticleID = (id) => {
