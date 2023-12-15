@@ -89,7 +89,6 @@ describe("getArticleByID", () => {
     .expect(200)
     .then((res) => {
       const { article } = res.body;
-      console.log(article);
       const expectedArticle = {
         article_id: 1,
         title: "Living in the shadow of a great man",
@@ -140,6 +139,7 @@ describe("getArticles", () => {
     .get("/api/articles?topic=mitch")
     .expect(200)
     .then((res) => {
+    
       const { articles } = res.body;
       expect(articles).toHaveLength(12);
       articles.forEach((article) => {
